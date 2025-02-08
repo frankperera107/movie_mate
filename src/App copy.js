@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const tempMovieData = [
   {
@@ -76,40 +76,9 @@ function Main({ children }) {
   return <main className="main">{children}</main>;
 }
 
-const key = "a8a8f1f";
-
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const query = "interstellar";
-
-  useEffect(function () {
-    async function fetchMovies() {
-      try {
-        setIsLoading(true);
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${key}&s=John%20Wick:%20Chapter%204`
-        );
-
-        if (!res.ok)
-          throw new Error("Something went wrong with fetching movies.");
-
-        const data = await res.json();
-        setMovies(data.Search);
-        setIsLoading(false);
-      } catch (err) {
-        console.log(err.message);
-        setError(err.message);
-      }
-    }
-    fetchMovies();
-  }, []);
-
-  // fetch(`http://www.omdbapi.com/?apikey=${key}&s=John%20Wick:%20Chapter%204`)
-  //   .then((res) => res.json())
-  //   .then((data) => setMovies(data.Search));
+  const [movies, setMovies] = useState(tempMovieData);
+  const [watched, setWatched] = useState(tempWatchedData);
 
   return (
     <>
@@ -119,10 +88,7 @@ export default function App() {
       </NavBar>
       <Main>
         <Box>
-          {/* {isLoading ? <Loader /> : <MovieList movies={movies} />} */}
-          {isLoading && <Loader />}
-          {!isLoading && !error && <MovieList movies={movies} />}
-          {error && <ErrorMessage message={error} />}
+          <MovieList movies={movies} />
         </Box>
         <Box>
           <WatchedSummary watched={watched} />
@@ -130,18 +96,6 @@ export default function App() {
         </Box>
       </Main>
     </>
-  );
-}
-
-function Loader() {
-  return <p className="loader">Loading...</p>;
-}
-
-function ErrorMessage({ message }) {
-  return (
-    <p className="error">
-      <span>⛔</span> {message}
-    </p>
   );
 }
 
